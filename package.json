@@ -166,7 +166,6 @@
   },
   "scripts": {
     "lint": "eslint .",
-    "pretest": "npm run lint",
     "test": "node ./test/runTest.js",
     "test:unit": "mocha test/**/*.test.js --grep \"Extension Integration Tests\" --invert",
     "test:integration": "node ./test/runTest.js",

@@ -242,6 +242,58 @@ print('line 4');`;
         });
     });
 
+    suite('Semicolon Handling', () => {
+        test('should include semicolons in statement boundaries', () => {
+            const code = `
+                console.log('with semicolon');
+                console.log('without semicolon')
+                console.debug('with spaces before') ;
+            `;
+
+            const statements = parser.parseCode(code, 'test.js');
+
+            // Check that semicolons are included in the text
+            const withSemicolon = statements.find(s => s.text.includes('with semicolon'));
+            const withoutSemicolon = statements.find(s => s.text.includes('without semicolon'));
+            const withSpaces = statements.find(s => s.text.includes('with spaces before'));
+
+            assert.ok(withSemicolon.text.includes(';'), 'Should include semicolon');
+            assert.ok(!withoutSemicolon.text.includes(';'), 'Should not include semicolon when none exists');
+            assert.ok(withSpaces.text.includes(';'), 'Should include semicolon even with spaces');
+        });
+
+        test('should handle debugger statements with and without semicolons', () => {
+            const code = `
+                debugger;
+                debugger
+                if (condition) debugger;
+            `;
+
+            const statements = parser.parseCode(code, 'test.js');
+            const debuggerStatements = statements.filter(s => s.type === 'debugger');
+
+            assert.strictEqual(debuggerStatements.length, 3);
+
+            // Check semicolon inclusion
+            const withSemicolon = debuggerStatements.filter(s => s.text.includes(';'));
+            const withoutSemicolon = debuggerStatements.filter(s => !s.text.includes(';'));
+
+            assert.ok(withSemicolon.length >= 1, 'Should find debugger with semicolon');
+            assert.ok(withoutSemicolon.length >= 1, 'Should find debugger without semicolon');
+        });
+
+        test('should handle multiline statements with semicolons', () => {
+            const code = `console.log(
+    'multiline',
+    'statement'
+);`;
+
+            const statements = parser.parseCode(code, 'test.js');
+            assert.strictEqual(statements.length, 1);
+            assert.ok(statements[0].text.includes(';'), 'Should include semicolon in multiline statement');
+        });
+    });
+
     suite('Performance Tests', () => {
         test('should handle large files efficiently', () => {
             // Generate a large file with many console statements

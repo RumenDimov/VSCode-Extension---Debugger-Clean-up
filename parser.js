@@ -103,7 +103,14 @@ class DebugStatementParser {
 
     addDebugStatement(node, code, type) {
         const start = node.start;
-        const end = node.end;
+        let end = node.end;
+
+        // Extend end position to include optional semicolon
+        const afterStatement = code.substring(end);
+        const semicolonMatch = afterStatement.match(/^[\s]*;/);
+        if (semicolonMatch) {
+            end += semicolonMatch[0].length;
+        }
 
         // Find the actual line boundaries in the source code
         const lines = code.split('\n');
@@ -137,10 +144,11 @@ class DebugStatementParser {
 
     fallbackRegexParse(code) {
         const patterns = [
-            { regex: /console\.(log|debug|info|warn|error|trace|table|time|timeEnd)\s*\([^)]*\)\s*;?/g, type: 'console' },
-            { regex: /print\s*\([^)]*\)\s*;?/g, type: 'print' },
-            { regex: /System\.out\.println\s*\([^)]*\)\s*;?/g, type: 'system.out' },
-            { regex: /debugger\s*;?/g, type: 'debugger' }
+            // Enhanced console pattern to handle complex scenarios
+            { regex: /console\.(log|debug|info|warn|error|trace|table|time|timeEnd)\s*\([^)]*\)\s*;?\s*/g, type: 'console' },
+            { regex: /print\s*\([^)]*\)\s*;?\s*/g, type: 'print' },
+            { regex: /System\.out\.println\s*\([^)]*\)\s*;?\s*/g, type: 'system.out' },
+            { regex: /debugger\s*;?\s*/g, type: 'debugger' }
         ];
 
         const statements = [];
