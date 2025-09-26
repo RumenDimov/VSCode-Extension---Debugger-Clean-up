@@ -1,0 +1,194 @@
+{
+  "name": "debug-cleanup-pro",
+  "displayName": "Debug Cleanup Pro",
+  "description": "Professional tool for cleaning up debug statements and console logs from your code",
+  "version": "0.0.1",
+  "engines": {
+    "vscode": "^1.74.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "onCommand:debug-cleanup-pro.cleanupDebug",
+    "onCommand:debug-cleanup-pro.cleanCurrentFile",
+    "onCommand:debug-cleanup-pro.cleanWorkspace",
+    "onCommand:debug-cleanup-pro.cleanSelection"
+  ],
+  "main": "./extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "debug-cleanup-pro.cleanupDebug",
+        "title": "Cleanup Debug Statements",
+        "category": "Debug Cleanup Pro"
+      },
+      {
+        "command": "debug-cleanup-pro.cleanCurrentFile",
+        "title": "Clean Current File",
+        "category": "Debug Cleanup Pro"
+      },
+      {
+        "command": "debug-cleanup-pro.cleanWorkspace",
+        "title": "Clean Workspace",
+        "category": "Debug Cleanup Pro"
+      },
+      {
+        "command": "debug-cleanup-pro.cleanSelection",
+        "title": "Clean Selection",
+        "category": "Debug Cleanup Pro"
+      }
+    ],
+    "keybindings": [
+      {
+        "command": "debug-cleanup-pro.cleanCurrentFile",
+        "key": "ctrl+alt+c",
+        "mac": "cmd+alt+c",
+        "when": "editorTextFocus"
+      },
+      {
+        "command": "debug-cleanup-pro.cleanWorkspace",
+        "key": "ctrl+alt+w",
+        "mac": "cmd+alt+w"
+      },
+      {
+        "command": "debug-cleanup-pro.cleanSelection",
+        "key": "ctrl+alt+s",
+        "mac": "cmd+alt+s",
+        "when": "editorHasSelection"
+      }
+    ],
+    "configuration": {
+      "title": "Debug Cleanup Pro",
+      "properties": {
+        "debugCleanupPro.removeConsoleLog": {
+          "type": "boolean",
+          "default": true,
+          "description": "Remove console.log statements"
+        },
+        "debugCleanupPro.removeConsoleWarn": {
+          "type": "boolean",
+          "default": true,
+          "description": "Remove console.warn statements"
+        },
+        "debugCleanupPro.removeConsoleError": {
+          "type": "boolean",
+          "default": false,
+          "description": "Remove console.error statements"
+        },
+        "debugCleanupPro.removeConsoleInfo": {
+          "type": "boolean",
+          "default": true,
+          "description": "Remove console.info statements"
+        },
+        "debugCleanupPro.removeConsoleDebug": {
+          "type": "boolean",
+          "default": true,
+          "description": "Remove console.debug statements"
+        },
+        "debugCleanupPro.removeConsoleTrace": {
+          "type": "boolean",
+          "default": true,
+          "description": "Remove console.trace statements"
+        },
+        "debugCleanupPro.removeDebugger": {
+          "type": "boolean",
+          "default": true,
+          "description": "Remove debugger statements"
+        },
+        "debugCleanupPro.removePrint": {
+          "type": "boolean",
+          "default": true,
+          "description": "Remove print() statements"
+        },
+        "debugCleanupPro.removeSystemOut": {
+          "type": "boolean",
+          "default": true,
+          "description": "Remove System.out.println statements"
+        },
+        "debugCleanupPro.maxEmptyLines": {
+          "type": "number",
+          "default": 2,
+          "minimum": 1,
+          "maximum": 10,
+          "description": "Maximum number of consecutive empty lines to keep"
+        },
+        "debugCleanupPro.cleanWhitespace": {
+          "type": "boolean",
+          "default": true,
+          "description": "Clean trailing whitespace and normalize empty lines"
+        },
+        "debugCleanupPro.preserveComments": {
+          "type": "boolean",
+          "default": true,
+          "description": "Preserve comments when removing debug statements"
+        },
+        "debugCleanupPro.showPreview": {
+          "type": "boolean",
+          "default": false,
+          "description": "Show preview of changes before applying cleanup"
+        },
+        "debugCleanupPro.autoSave": {
+          "type": "boolean",
+          "default": false,
+          "description": "Automatically save file after cleanup"
+        },
+        "debugCleanupPro.excludePatterns": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": [
+            "**/node_modules/**",
+            "**/dist/**",
+            "**/build/**",
+            "**/*.min.js"
+          ],
+          "description": "File patterns to exclude from cleanup"
+        },
+        "debugCleanupPro.includeFileTypes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": [
+            "javascript",
+            "typescript",
+            "javascriptreact",
+            "typescriptreact",
+            "java",
+            "python"
+          ],
+          "description": "File types to include in cleanup operations"
+        }
+      }
+    }
+  },
+  "scripts": {
+    "lint": "eslint .",
+    "pretest": "npm run lint",
+    "test": "node ./test/runTest.js",
+    "test:unit": "mocha test/**/*.test.js --grep \"Extension Integration Tests\" --invert",
+    "test:integration": "node ./test/runTest.js",
+    "test:parser": "mocha test/parser.test.js",
+    "test:cleaner": "mocha test/cleaner.test.js",
+    "test:errors": "mocha test/errorHandler.test.js",
+    "coverage": "nyc npm run test:unit"
+  },
+  "dependencies": {
+    "@babel/parser": "^7.23.0",
+    "@babel/traverse": "^7.23.0",
+    "@babel/types": "^7.23.0"
+  },
+  "devDependencies": {
+    "@types/vscode": "^1.74.0",
+    "@types/node": "16.x",
+    "@types/mocha": "^10.0.1",
+    "eslint": "^8.28.0",
+    "glob": "^8.0.3",
+    "mocha": "^10.1.0",
+    "nyc": "^15.1.0",
+    "typescript": "^4.9.4",
+    "@vscode/test-electron": "^2.2.0"
+  }
+}
